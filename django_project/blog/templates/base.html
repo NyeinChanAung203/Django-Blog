@@ -1,0 +1,103 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <style>
+      .footer {
+        position: fixed;
+        left: 0;
+        bottom: 0;
+        width: 100%;
+        text-align: center;
+      }
+      </style>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}" crossorigin="anonymous">
+    <title>{% block title %}{% endblock %}</title>
+</head>
+<body>
+  <nav class="navbar navbar-expand-lg navbar-light bg-light mb-3">
+    <a class="navbar-brand" href="{% url 'blog-home' %}">UN-BLOG</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+  
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav mr-auto">
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'blog-home' %}">Home <span class="sr-only">(current)</span></a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'authors' %}">Authors</a>
+        </li>
+        {% if user.is_authenticated %}
+        <li class="nva-item">
+          <form class="form-inline d-flex justify-content-center md-form form-sm mt-1" action="{% url 'post_search' %}">
+            <i class="fas fa-search" aria-hidden="true"></i>
+             <input class="form-control form-control-sm ml-3 w-75" type="text" name="query" placeholder="Search" aria-label="Search" required="" id="id_query">
+          </form>
+        </li>
+            {% endif %}
+        
+      </ul>
+      <ul class="navbar-nav">
+        {% if user.is_authenticated %}
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'post-create' %}">New Post</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'profile' %}">Profile</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'logout' %}">Logout</a>
+        </li>
+        {% else %}
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'register' %}">Register</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'login' %}">Login</a>
+        </li>
+        {% endif %}
+      </ul>
+     
+    </div>
+  </nav>
+
+    <main role="main" class="container">
+        <div class="row">
+            <div class="col-md-8 mt-3">
+                {% if messages %}
+                {% for message in messages %}
+                <div class="alert alert-{{ message.tags }}">
+                    {{ message }}
+                </div>
+        
+                {% endfor %}
+                {% endif %}
+                {% block content %}{% endblock %}
+            </div>
+            
+            {% block sidebar %}
+            
+              {% endblock %}
+            </div>
+          </div>
+            
+        </div>
+    </main>
+
+<!-- Footer -->  
+  <div class="footer bg-dark text-white">
+    <p style="margin:0;padding:0;margin-top:5px">Powered by <span class="text-primary">UnseeN</span></p>
+    <small class="text-muted text-white">&copy; 2020 Copyright</small>
+  </div>
+<!-- Footer -->
+    
+    <script src="{% static 'js/jquery.min.js' %}""  crossorigin="anonymous"></script>
+<script src="{% static 'js/popper.min.js' %}"  crossorigin="anonymous"></script>
+<script src="{% static 'js/bootstrap.min.js' %}"  crossorigin="anonymous"></script>
+</body>
+</html>

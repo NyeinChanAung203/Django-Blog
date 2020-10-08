@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}Profile{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-body">
+            <div style="width: 130px;float: left;">
+                <img style="object-fit: cover;height: 100px;width: 100px" class="rounded-circle account-img" src='{{ user.profile.image.url }}' >
+            </div>
+            
+            
+                <h2 class="account-heading ml-10">{{ user.username }}</h2>
+                <p class="text-secondary ml-10">{{ user.email }}</p>
+            
+        
+        <form method="POST" enctype="multipart/form-data" class="mt-5">
+            {% csrf_token %}
+            <fieldset class="form-group">
+                <legend class="border-bottom mb-4">Profile Info</legend>
+                {{ u_form | crispy }}
+                {{ p_form | crispy }}
+            </fieldset>
+            <div class="form-group">
+                <button class="btn btn-info" type="submit">Update</button>
+            </div>
+    
+        </form>
+
+    </div>
+    
+</div>
+
+
+    
+{% endblock %}
+
+{% block sidebar %}
+<div class="col-md-4 mt-3 mb-3">
+  <div class="card">
+    <div class="card-body">
+        <center><h3>MY POST LIST</h3>
+        <p><small class="text-muted">(just only 10 posts)</small></p></center>
+        
+        {% if user_post_list %}
+        <ul class="list-group">
+          {% for p in user_post_list %}
+          <div class="list-group-item list-group-item-light">
+            <a class="card-link" href="{% url 'post-detail' p.id %}">{{ p.title }}</a>
+          </div>
+          {% endfor %}
+            
+        </ul>
+        {% else%}
+        <p>You have not posted any post yet.</p>
+        {% endif %}
+    </div>
+    
+</div>
+</div>
+{% endblock %}

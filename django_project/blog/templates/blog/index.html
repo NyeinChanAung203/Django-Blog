@@ -1,0 +1,77 @@
+{% extends 'base.html' %}
+{% load hitcount_tags %}
+{% block title %}Home{% endblock %}
+
+{% block content %}
+{% if posts %}
+    {% for post in posts %}
+    <div class="card mb-3">
+      <div class="media">
+        <img style="object-fit: cover;width: 60px;height: 60px;" class="rounded-circle mr-3 mt-2 ml-2" src="{{ post.author.profile.image.url }}">
+        <div class="media-body">
+          <small>
+            <a class="mr-2 text-success" href="{% url 'user-posts' post.author.username %}">{{ post.author }}</a>
+          </small>
+          <small class="text-muted">{{ post.date_posted | date:'F d,Y'}}</small>
+          <small class="text-muted ml-3">Views: {% get_hit_count for post %}</small>
+          <hr style="margin:1px 0 5px 0;padding:0;">
+          <h4 class="mt-0"><a href="{% url 'post-detail' post.id %}">{{ post.title }}</a></h4>
+          {{ post.content|truncatewords:30}}
+        </div>
+      </div>
+    </div>
+        
+    {% endfor %}
+{% else %}
+    <p>There are no posts yet.</p>
+{% endif%}
+   
+
+    {% if is_paginated %}
+      {% if page_obj.has_previous %}
+        <a class="btn btn-outline-info mb-4" href="?page=1">First</a>
+        <a class="btn btn-outline-info mb-4" href="?page={{ page_obj.previous_page_number }}">Previous</a>
+      {% endif %}
+
+      {% for num in page_obj.paginator.page_range %}
+        {% if page_obj.number == num %}
+        <a class="btn btn-outline-info mb-4 active" href="?page={{ num }}">{{ num }}</a>
+        {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+        <a class="btn btn-outline-info mb-4" href="?page={{ num }}">{{ num }}</a>
+        {% endif %}
+      {% endfor %}
+
+      {% if page_obj.has_next %}
+        <a class="btn btn-outline-info mb-4" href="?page={{ page_obj.next_page_number }}">Next</a>
+        <a class="btn btn-outline-info mb-4" href="?page={{ page_obj.paginator.num_pages }}">Last</a>
+      {% endif %}
+
+    {% endif %}
+        
+{% endblock %}
+
+{% block sidebar %}
+
+
+<div class="col-md-4 mt-3 mb-3">
+  <div class="card">
+    <div class="card-body">
+        <h3>Popular Posts</h3>
+        
+        <ul class="list-group">
+          {% if popular_posts %}
+          {% for p in popular_posts %}
+          <div class="list-group-item list-group-item-light">
+            <a class="card-link" href="{% url 'post-detail' p.id %}">{{ p.title }}</a>
+          </div>
+          {% endfor %}
+          {% else %}
+          <p>There are no popular posts yet.</p>
+          {% endif %}
+            
+        </ul>
+    </div>
+    
+</div>
+</div>
+{% endblock %}

@@ -1,0 +1,85 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% block title %}Post Detail{% endblock %}
+{% load hitcount_tags %}
+{% block content %}
+    
+<div class='card mb-3'>
+    <div class="media">
+        <img style="object-fit: cover;width: 60px;height: 60px;" class="rounded-circle mt-2 ml-2 mr-3" src="{{ post.author.profile.image.url }}">
+        <div class="media-body">
+          <small class="text-muted">
+            <a class="mr-2 text-success" href="{% url 'user-posts' post.author.username %}">{{ post.author }}</a>
+                {{ post.date_posted | date:'F d,Y'}}
+                Views: {% get_hit_count for post %}
+          </small>
+                {% if post.author == user %}
+                <div>
+                    <a class="btn btn-secondary mt-2 mb-1" href="{% url 'post-update' post.id %}">Update</a>
+                    <a class="btn btn-danger mt-2 mb-1" href="{% url 'post-delete' post.id %}">Delete</a>
+                </div>
+                
+                {% endif %}
+                    <hr style="margin:0;padding:0;margin-bottom: 5px;">
+          <h5 class="mt-0">{{ post.title }}</h5>
+          {{ post.content | linebreaks }}
+        </div>
+      </div>
+
+</div>       
+         
+<hr>
+
+        {% for comment in comments %}
+        
+
+        
+        <small class='text-muted'>
+        <p>
+          <img style="object-fit: cover;width: 30px;height: 30;" class="rounded-circle" src="{{ user.profile.image.url }}">
+          <b><a class="text-success" href="{% url 'user-posts' comment.user.username %}">{{ comment.user }}</a></b> {{ comment.created }}  </p>      
+        </small>
+        <p>{{ comment.body | linebreaks }}</p>
+       
+        <hr>
+        {% empty %}
+        <p>There are no comments yet.</p>
+        
+        <hr>
+        {% endfor %}
+
+        {% if new_comment %}
+        <h2>Your comment has been added.</h2>
+        {% else %}
+        
+        <h2>Add a new comment</h2>
+        <form action='.' method="POST">
+          
+          {{ comment_form | crispy }}
+          {% csrf_token %}
+          <p><input type="submit" value='Add comment' class="btn btn-info"></p>
+        </form>
+        {% endif %}
+        
+        
+{% endblock %}
+
+{% block sidebar %}
+<div class="col-md-4 mt-3">
+  <div class="card">
+    <div class="card-body">
+        <h3>Popular Posts</h3>
+        
+        <ul class="list-group">
+          {% for p in popular_posts %}
+          <div class="list-group-item list-group-item-light">
+            <a class="card-link" href="{% url 'post-detail' p.id %}">{{ p.title }}</a>
+          </div>
+          {% endfor %}
+            
+        </ul>
+    </div>
+    
+</div>
+</div>
+{% endblock %}

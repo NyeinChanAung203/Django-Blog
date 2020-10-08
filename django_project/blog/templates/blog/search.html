@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+{% block title %}Search{% endblock %}
+
+{% block content %}
+
+{% if query %}
+
+<div class="card">
+    <div class="card-body">
+        <div class="card-title">
+        <center><h3>Posts containing "{{ query }}"</h3></center>
+        </div>
+        <div class="card-subtitle mb-3 text-muted">
+            {% with results.count as total_results %}
+            Found <b>'{{ total_results }}'</b> result{{ total_results | pluralize }}
+            {% endwith %}
+        </div>
+        <div class="card-text">
+            
+            {% for post in results %}
+        <h4 class="card-text mt-0"><a href="{% url 'post-detail' post.id %}">{{ post.title }}</a></h4>
+        {{ post.content|truncatewords:15}}
+        <hr>
+        {% empty %}
+        <p>There are no results for you.</p>
+        {% endfor %}
+        </div>
+    </div>
+</div>
+{% else %}
+      <h2><center>Posts containing ""</center></h2>
+      	<h3>
+		Found <b>0</b> result
+          </h3>
+	<p>There are no results for you.</p>
+      <hr>
+{% endif %}  
+{% endblock %}
+
+{% block sidebar %}
+<div class="col-md-4 mt-3 mb-3">
+  <div class="card">
+    <div class="card-body">
+        <h3>Popular Posts</h3>
+        
+        <ul class="list-group">
+          {% if popular_posts %}
+          {% for p in popular_posts %}
+          <div class="list-group-item list-group-item-light">
+            <a class="card-link" href="{% url 'post-detail' p.id %}">{{ p.title }}</a>
+          </div>
+          {% endfor %}
+          {% else %}
+          <p>There are no popular posts yet.</p>
+          {% endif %}
+        </ul>
+    </div>
+</div>
+</div>
+{% endblock %}
+
+
